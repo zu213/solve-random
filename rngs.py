@@ -3,29 +3,32 @@ import secrets
 
 #C:\Users\evilm\AppData\Local\Programs\Python\Python311\python.exe
 
-def not_random_repeating():
+def not_random_repeating(_):
     return 1
 
-def not_random_addition():
+def not_random_addition(_):
     if not hasattr(not_random_addition, "last_value"):
         not_random_addition.last_value = 0
 
     not_random_addition.last_value += 3
+    not_random_addition.last_value %= 100
     return not_random_addition.last_value
 
-def not_random_multiplication():
-    if not hasattr(not_random_addition, "last_value"):
-        not_random_addition.last_value = 1
+def not_random_multiplication(_):
+    if not hasattr(not_random_multiplication, "last_value"):
+        not_random_multiplication.last_value = 1
 
-    not_random_addition.last_value *= 4
-    return not_random_addition.last_value
+    not_random_multiplication.last_value *= 4
+    not_random_multiplication.last_value %= 100
+    return not_random_multiplication.last_value
 
-def not_random_power():
-    if not hasattr(not_random_addition, "last_value"):
-        not_random_addition.last_value = 1
+def not_random_power(_):
+    if not hasattr(not_random_power, "last_value"):
+        not_random_power.last_value = 2
 
-    not_random_addition.last_value *= not_random_addition.last_value
-    return not_random_addition.last_value
+    not_random_power.last_value *= not_random_power.last_value
+    not_random_power.last_value %= 100
+    return not_random_power.last_value
 
 def pseudo_random_lcg(seed, a=14, c=111, m=2**8):
     return (a * seed + c) % m
@@ -45,7 +48,7 @@ def pseudo_random_mersenne(seed):
         
     return random.randint(1, 100)
     
-def pseudo_random_prng():
+def pseudo_random_prng(_):
     return secrets.randbelow(100)
 
 def main():
