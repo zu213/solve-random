@@ -6,13 +6,10 @@ import secrets
 def not_random_repeating(_):
     return 1
 
-def not_random_addition(_):
-    if not hasattr(not_random_addition, "last_value"):
-        not_random_addition.last_value = 0
-
-    not_random_addition.last_value += 3
-    not_random_addition.last_value %= 100
-    return not_random_addition.last_value
+def not_random_addition(seed):
+    seed += 3
+    seed %= 100
+    return seed
 
 def not_random_multiplication(_):
     if not hasattr(not_random_multiplication, "last_value"):
