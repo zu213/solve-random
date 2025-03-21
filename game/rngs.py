@@ -27,7 +27,7 @@ def not_random_power(_):
     not_random_power.last_value %= 100
     return not_random_power.last_value
 
-def pseudo_random_lcg(seed, a=14, c=111, m=2**8):
+def pseudo_random_lcg(seed, a=7, c=13, m=100):
     return (a * seed + c) % m
 
 def pseudo_random_middle_square(seed):

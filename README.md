@@ -10,3 +10,5 @@ Within `rngs.py` are several different function that return random numbers of va
 </ul>
 
 The agent is trying to solve these games, for now I have simply implemented DQN.
+
+the agents will not run without adding the path to find the game

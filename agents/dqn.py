@@ -4,7 +4,11 @@ import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras import layers
 import matplotlib.pyplot as plt
-import game.rngs as rngs
+import sys
+import os
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "game")))
+import rngs as rngs
 
 # Hyperparameters
 learning_rate = 0.0005 # if too low x if too hig y
@@ -114,4 +118,4 @@ def game_loop(game_func):
     plt.ylabel('Total Reward')
     plt.show()
 
-game_loop(rngs.not_random_multiplication)
+game_loop(rngs.pseudo_random_lcg)
