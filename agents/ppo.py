@@ -11,12 +11,12 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "g
 import rngs as rngs
 
 # Hyperparameters
-learning_rate = 0.0003
+learning_rate = 0.0005
 clip_ratio = 0.2
 gamma = 0.97
 lambda_gae = 0.95
 policy_update_epochs = 10
-batch_size = 32
+batch_size = 16
 max_episodes = 500
 guess_range = 100  # Range of guesses for game
 
@@ -47,7 +47,7 @@ class PPOAgent:
         state = np.array([state]).reshape(1, 1)
         probs = self.actor.predict(state, verbose=0)[0]
         action = np.random.choice(guess_range, p=probs)
-        log_prob = np.log(probs[action])
+        log_prob = np.log(probs[action] + 1e-10)
         return action + 1, log_prob
     
     def store_experience(self, state, action, reward, next_state, log_prob, done):
@@ -110,8 +110,9 @@ def game_loop(game_func):
         total_reward = 0
         done = False
         counter = 0
+        states = []
         
-        while not done:
+        while not done and counter < 500:
             counter += 1
             action, log_prob = agent.choose_action(state)
             output = game_func(state)
@@ -120,11 +121,18 @@ def game_loop(game_func):
             
             agent.store_experience(state, action, reward, output, log_prob, done)
             state = output
+            states.append(state)
             total_reward += reward
+            
+        if counter > 99:
+            total_reward -= 1000000
+            print(f"Failed to guess in less that a hundred took {counter}")
+        else:
+            print(f"Episode {episode+1}: Correct Guess! The number was {output}. Took {counter} guesses")
+        
         
         agent.train()
         
-        print(f"Episode {episode+1}: Correct Guess! The number was {output}. Took {counter} guesses")
         rewards.append(total_reward)
     
     plt.plot(range(max_episodes), rewards)

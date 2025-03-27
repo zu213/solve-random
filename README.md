@@ -2,6 +2,8 @@
 
 Simple DQN program to try and solve different pseduo random methods
 
+Most of the code is generated using ai
+
 ## The game
 Within `rngs.py` are several different function that return random numbers of varying difficulty to predicts
 

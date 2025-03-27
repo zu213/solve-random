@@ -10,6 +10,10 @@ Transformer with exponetntial doesn't solve not_random_adition
 Transformer does not work with linear, trying fine tuning
 Transformer seems useless
 
-PPO On lcg
+PPO does nto work for lcg atleast
+
+CEM (Cross-Entropy Method.) - doesnt seem to work reliable most likely due to format of code
+
+a2c actor critic
 
 C:\Users\evilm\AppData\Local\Programs\Python\Python311\python.exe transformer.py
