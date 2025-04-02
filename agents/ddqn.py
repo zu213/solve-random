@@ -11,16 +11,16 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "g
 import rngs as rngs
 
 # Hyperparameters
-learning_rate = 0.0005 # if too low x if too hig y
-discount_factor = 0.97 # if too low x if too high y
+learning_rate = 0.0005
+discount_factor = 0.97
 epsilon = 1.0
 epsilon_min = 0.1
 epsilon_decay = 0.95
-batch_size = 32 # aa
-replay_memory_size = 2000 #dss
+batch_size = 32
+replay_memory_size = 2000
 max_episodes = 1000
-guess_range = 100  # Range of guesses for game
-update_target_every = 10 #dsadss
+guess_range = 100  
+update_target_every = 10  
 
 replay_memory = []
 
@@ -29,13 +29,13 @@ def create_model():
         layers.LSTM(32, input_shape=(1, 1), return_sequences=True),
         layers.LSTM(32),
         layers.Dense(64, activation='relu'),
-        layers.Dense(guess_range, activation='linear')  # Q-values for each possible guess
+        layers.Dense(guess_range, activation='linear')  
     ])
     model.compile(optimizer=keras.optimizers.Adam(learning_rate=learning_rate), loss='mse')
     return model
 
-# Initialize the Q-network and the target network
-model = create_model()
+# Initialize Q-networks
+model = create_model()  
 target_model = create_model()
 target_model.set_weights(model.get_weights())
 
@@ -62,16 +62,19 @@ def train_model():
     states = np.array(states).reshape(-1, 1, 1)
     next_states = np.array(next_states).reshape(-1, 1, 1)
     
-    target_q_values = target_model.predict(next_states, verbose=0)
-    target = model.predict(states, verbose=0)
-    
+    # Get predicted Q-values from both networks
+    q_values_next_main = model.predict(next_states, verbose=0)  # Main network
+    q_values_next_target = target_model.predict(next_states, verbose=0)  # Target network
+    target_q_values = target_model.predict(states, verbose=0)
+
     for i in range(batch_size):
         if rewards[i] == 1:
-            target[i][actions[i] - 1] = rewards[i]
+            target_q_values[i][actions[i] - 1] = rewards[i]
         else:
-            target[i][actions[i] - 1] = rewards[i] + discount_factor * np.max(target_q_values[i])
+            best_action = np.argmax(q_values_next_main[i])  # Choose action from main network
+            target_q_values[i][actions[i] - 1] = rewards[i] + discount_factor * q_values_next_target[i][best_action]
     
-    model.fit(states, target, epochs=1, verbose=0)
+    model.fit(states, target_q_values, epochs=1, verbose=0)
 
 def update_target_network():
     target_model.set_weights(model.get_weights())
